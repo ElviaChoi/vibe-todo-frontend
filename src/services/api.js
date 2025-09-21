@@ -1,6 +1,13 @@
 // 환경변수에서 API URL 가져오기 (Vite에서는 VITE_ 접두사 필요)
-// 프록시 사용 시에는 상대 경로 사용
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/todos';
+// 개발 환경에서는 프록시 사용, 프로덕션에서는 환경변수 필수
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.PROD 
+    ? (() => {
+        console.error('VITE_API_BASE_URL 환경변수가 설정되지 않았습니다. Vercel 환경변수를 확인해주세요.');
+        return '/api/todos'; // fallback
+      })()
+    : '/api/todos'
+  );
 
 // API 통신을 위한 기본 함수
 const apiRequest = async (endpoint, options = {}) => {
